@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Field;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -15,6 +17,13 @@ public class DemoApplicationTests {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private TestService testService;
+
+    @Test
+    public void test() {
+        testService.add();
+    }
 
     /**
      * redis 测试
@@ -25,6 +34,7 @@ public class DemoApplicationTests {
         stringRedisTemplate.opsForValue().set("name", "guanguan");
         String val = stringRedisTemplate.opsForValue().get("name");
         System.out.println(val);
+
 
     }
 
@@ -37,10 +47,31 @@ public class DemoApplicationTests {
         System.out.println("--------------------start---------------------");
 
 
+        List<User> list = Arrays.asList(
+                new User("ymx", 20, 1),
+                new User("ymx2", 21, 1),
+                new User("ymx3", 22, 1),
+                new User("ymx4", 23, 1),
+                new User("ymx5", 24, 1));
+
+        List<String> mapList = new ArrayList<>();
+        list.stream().forEach(a -> {
+            Map map = new HashMap();
+            map.put("name", a.getName());
+            map.put("age", a.getAge());
+            mapList.add(JSONObject.toJSONString(map));
+            System.out.println(JSONObject.toJSON(a));
+        });
+
+        mapList.stream().forEach(System.out::println);
+
+        new User();
+
 
         System.out.println("--------------------end---------------------");
 
     }
+
 
     /**
      * 测试 遍历实体类的属性，根据属性的注解来判断是否必填
